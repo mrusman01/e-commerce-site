@@ -15,7 +15,7 @@ router.post("/register", upload.single("avatar"), SignUp);
 router.post("/login", Login);
 router.post("/add-product", upload.single("avatar"), AddProduct);
 router.post("/product-update", upload.single("avatar"), ProductUpdate);
-router.get("/all-products/:category", GetAllProduct);
-router.delete("/del-products", ProductDelete);
+router.get("/all-products/:category/:pages/:productsPerPages", GetAllProduct);
+router.delete("/del-products/:id", ProductDelete);
 
 module.exports = router;

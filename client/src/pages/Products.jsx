@@ -49,33 +49,34 @@ const Products = () => {
   const dispatch = useDispatch();
   // const [error, setError] = useState(null);
   const [pages, setPages] = useState(1);
+  const [totalProduct, setTotalProduct] = useState(1);
+
   const productsPerPage = 5;
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/all-products/${category}`
+        `http://localhost:4000/all-products/${category}/${pages}/${productsPerPage}`
       );
+
+      setTotalProduct(response.data.totalProducts);
       setData(response.data.products);
     } catch (err) {
-      // setError(err);
       console.log(err);
     }
   };
   useEffect(() => {
     fetchData();
-  }, [category]);
-
-  // console.log(data);
+  }, [category, pages]);
 
   const deleteItem = async (item) => {
+    const id = item._id;
+    console.log(id);
     try {
       const response = await axios.delete(
-        "http://localhost:4000/del-products",
-        { id: item._id }
+        `http://localhost:4000/del-products/${id}`
       );
-      // console.log(response);
-      // console.log(response.data);
+
       setResponseMessage(response.data.message);
       setOpen(true);
       fetchData();
@@ -105,9 +106,7 @@ const Products = () => {
   const handleChangePage = (event, value) => {
     setPages(value);
   };
-  const startIndex = (pages - 1) * productsPerPage;
-  const endIndex = startIndex + productsPerPage;
-  const paginatedData = data.slice(startIndex, endIndex);
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -170,7 +169,7 @@ const Products = () => {
         <Container sx={{ py: 5 }} maxWidth="lg">
           <Grid container spacing={4}>
             {data.length > 0 ? (
-              paginatedData.map((item, i) => (
+              data.map((item, i) => (
                 <Grid item key={i} xs={12} sm={6} md={4}>
                   <Card
                     sx={{
@@ -228,7 +227,7 @@ const Products = () => {
         </Container>
         <Box display={"flex"} justifyContent={"center"}>
           <Pagination
-            count={Math.ceil(data.length / productsPerPage)}
+            count={Math.ceil(totalProduct / productsPerPage)}
             page={pages}
             onChange={handleChangePage}
             color="primary"

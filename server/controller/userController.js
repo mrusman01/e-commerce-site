@@ -170,25 +170,36 @@ const AddProduct = async (req, res) => {
 
 const GetAllProduct = async (req, res) => {
   const { category } = req.params;
+  const pages = parseInt(req.params.pages);
+  const productsPerPage = parseInt(req.params.productsPerPages);
+
   try {
+    const totalProducts = await ProductSchema.countDocuments({
+      categories:
+        category === "item" ? { $in: ["food", "phone", "clothes"] } : category,
+    });
+
+    const totalPages = Math.ceil(totalProducts / productsPerPage);
+
     const getProducts = await ProductSchema.find({
       categories:
         category === "item" ? { $in: ["food", "phone", "clothes"] } : category,
-      // category,
-    });
-
-    if (!getProducts) {
-      return res.status(400).json({
-        message: "not get all products",
-      });
-    }
+    })
+      .skip((pages - 1) * productsPerPage)
+      .limit(productsPerPage);
 
     res.status(200).json({
-      message: "all products get successfully",
+      message: "All products get successfully",
       products: getProducts,
+      currentPage: pages,
+      totalPages: totalPages,
+      totalProducts: totalProducts,
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
   }
 };
 
@@ -220,10 +231,9 @@ const ProductUpdate = async (req, res) => {
 };
 
 const ProductDelete = async (req, res) => {
-  console.log(req.body.id);
-  let delId = req.body.id;
+  const { id } = req.params;
   try {
-    let productDel = await ProductSchema.findOneAndDelete(delId);
+    let productDel = await ProductSchema.findOneAndDelete(id);
 
     if (!productDel) {
       return res
@@ -233,7 +243,7 @@ const ProductDelete = async (req, res) => {
 
     res.status(200).json({
       message: "Product deleted successfully",
-      product: productDel,
+      // product: productDel,
     });
   } catch (error) {
     console.error(error);
