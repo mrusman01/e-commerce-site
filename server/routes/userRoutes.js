@@ -7,6 +7,7 @@ const {
   ProductUpdate,
   ProductDelete,
   UserProducts,
+  PaymentStripe,
 } = require("../controller/userController");
 const upload = require("../middleware/multer");
 const auth = require("../middleware/auth");
@@ -24,5 +25,6 @@ router.get(
 );
 router.delete("/del-products/:id", ProductDelete);
 router.get("/user-products", auth, UserProducts);
+router.post("/payments", auth, PaymentStripe);
 
 module.exports = router;

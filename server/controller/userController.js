@@ -4,6 +4,12 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 
+const STRIP_PRIVATE_KEY = process.env.STRIP_PRIVATE_KEY;
+const stripe = require("stripe")(STRIP_PRIVATE_KEY);
+
+const EMAIL_USER = process.env.EMAIL_USER;
+const TO = process.env.TO;
+
 const generateRandomCode = () => {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -173,6 +179,7 @@ const GetAllProduct = async (req, res) => {
   const { _id } = req.user;
   try {
     const totalProducts = await ProductSchema.countDocuments({
+      user: { $ne: _id },
       categories:
         category === "item" ? { $in: ["food", "phone", "clothes"] } : category,
     });
@@ -266,6 +273,39 @@ const UserProducts = async (req, res) => {
   }
 };
 
+const PaymentStripe = async (req, res) => {
+  try {
+    const customer = await stripe.customers.create({
+      email: "javaidusman49@gamil.com",
+      source: "mianusmanjaved49@gamil.com",
+      name: "Mian Usman Javed",
+      address: {
+        line1: "Address",
+        postal_code: "452331",
+        city: "FSD",
+        country: "Pak",
+      },
+    });
+
+    const charge = await stripe.charges.create({
+      amount: 2500,
+      description: "Web Development Product",
+      currency: "INR",
+      customer: customer.id,
+    });
+
+    res.status(200).json({
+      message: "Payment successful",
+      charge,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Payment failed",
+    });
+  }
+};
+
 module.exports = {
   SignUp,
   Login,
@@ -275,4 +315,5 @@ module.exports = {
   GetAllProduct,
   ProductDelete,
   UserProducts,
+  PaymentStripe,
 };
