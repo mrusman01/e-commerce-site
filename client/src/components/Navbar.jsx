@@ -17,6 +17,7 @@ const pages = [
   { link: "/products", btn: "Products" },
   { link: "/cart-products", btn: "Cart" },
   { link: "/add-products", btn: "Add Products" },
+  { link: "/user-products", btn: "My Products" },
 ];
 const settings = [
   { link: "#", name: "Profile" },

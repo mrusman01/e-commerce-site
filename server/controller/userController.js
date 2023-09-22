@@ -102,13 +102,7 @@ const Login = async (req, res) => {
       success: true,
       token: token,
       message: "Login Successfully",
-      user: {
-        name: user?.name,
-        email: user?.email,
-        avatar: user?.avatar,
-        number: user?.number,
-        birth: user?.birth,
-      },
+      user: user,
     });
   } catch (error) {
     console.log(error);
@@ -137,9 +131,11 @@ const AcccountVerify = async (req, res) => {
 };
 
 const AddProduct = async (req, res) => {
-  let { title, description, price, rating, quantity, categories } = req.body;
+  const { _id } = req.user;
 
+  let { title, description, price, rating, quantity, categories } = req.body;
   const fileName = req.file.filename;
+
   try {
     let productAdd = new ProductSchema({
       title: title,
@@ -149,9 +145,11 @@ const AddProduct = async (req, res) => {
       rating: rating,
       categories: categories,
       quantity: quantity,
+      user: _id,
     });
 
     await productAdd.save();
+
     res.status(200).json({
       success: true,
       message: "Product add successfully",
@@ -172,7 +170,7 @@ const GetAllProduct = async (req, res) => {
   const { category } = req.params;
   const pages = parseInt(req.params.pages);
   const productsPerPage = parseInt(req.params.productsPerPages);
-
+  const { _id } = req.user;
   try {
     const totalProducts = await ProductSchema.countDocuments({
       categories:
@@ -180,8 +178,8 @@ const GetAllProduct = async (req, res) => {
     });
 
     const totalPages = Math.ceil(totalProducts / productsPerPage);
-
     const getProducts = await ProductSchema.find({
+      user: { $ne: _id },
       categories:
         category === "item" ? { $in: ["food", "phone", "clothes"] } : category,
     })
@@ -251,6 +249,23 @@ const ProductDelete = async (req, res) => {
   }
 };
 
+const UserProducts = async (req, res) => {
+  let { _id } = req.user;
+  try {
+    const userData = await UserData.findOne(_id);
+    console.log(userData, "=====");
+    if (!userData) {
+      return res.status(400).send({ message: "not aviliabe" });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "successfull",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   SignUp,
   Login,
@@ -259,4 +274,5 @@ module.exports = {
   ProductUpdate,
   GetAllProduct,
   ProductDelete,
+  UserProducts,
 };

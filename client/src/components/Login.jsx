@@ -40,12 +40,13 @@ const Login = () => {
         "http://localhost:4000/login",
         formData
       );
+      console.log(response);
       const token = response.data.token;
       localStorage.setItem("token", token);
+      navigate("/");
       setResponseMessage(response.data.message);
       // console.log(response.data.message);
       setOpen(true);
-      navigate("/");
     } catch (error) {
       setError(error);
       setResponseMessage(error.response?.data?.message || "An error occurred.");

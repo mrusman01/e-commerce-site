@@ -4,20 +4,23 @@ const initialState = {
   items: [],
 };
 
-const savedItems = JSON.parse(localStorage.getItem("items")) || [];
-
 export const productSlice = createSlice({
   name: "ADD_CART",
   initialState,
   reducers: {
     addCart: (state, action) => {
-      state.items.push(action.payload);
-      const stringifyObj = JSON.stringify(state.items);
-      localStorage.setItem("items", stringifyObj);
+      const findItem = state.items.find((item) => item._id === action.payload);
+      if (findItem) {
+        findItem.qunatity++;
+      } else {
+        state.items.push({ ...action.payload, qunatity: 1 });
+      }
     },
     remove: (state, action) => {
-      state.items.filter((item) => item._id !== action.payload);
-      localStorage.setItem("items", JSON.stringify(savedItems));
+      const removeItem = state.items.filter(
+        (item) => item._id !== action.payload
+      );
+      state.items = removeItem;
     },
   },
 });

@@ -56,7 +56,12 @@ const Products = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/all-products/${category}/${pages}/${productsPerPage}`
+        `http://localhost:4000/all-products/${category}/${pages}/${productsPerPage}`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
       );
 
       setTotalProduct(response.data.totalProducts);
@@ -126,7 +131,7 @@ const Products = () => {
               color="text.primary"
               gutterBottom
             >
-              Products layout
+              Market Products
             </Typography>
             <Typography
               variant="h5"

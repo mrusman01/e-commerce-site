@@ -1,35 +1,26 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useNavigate } from "react-router-dom";
+import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [token, setToken_] = useState(localStorage.getItem("token"));
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
-  const setToken = (newToken) => {
-    setToken_(newToken);
-  };
+  const authToken = localStorage.getItem("token");
 
   useEffect(() => {
-    if (token) {
-      localStorage.setItem("token", token);
-    } else {
-      localStorage.removeItem("token");
+    if (!authToken) {
+      localStorage.clear();
+      // navigate("/login");
     }
-  }, [token]);
+  });
 
-  const contextValue = useMemo(
-    () => ({
-      token,
-      setToken,
-    }),
-    [token]
-  );
+  const contextValue = {
+    user,
+    setUser,
+    authToken,
+  };
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

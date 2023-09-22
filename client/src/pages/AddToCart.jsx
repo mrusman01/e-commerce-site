@@ -35,7 +35,6 @@ const defaultTheme = createTheme();
 
 const AddToCart = () => {
   const data = useSelector((state) => state.products.items);
-
   const dispatch = useDispatch();
   const deleteProduct = (item) => {
     dispatch(remove(item._id));
