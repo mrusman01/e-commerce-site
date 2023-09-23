@@ -25,6 +25,6 @@ router.get(
 );
 router.delete("/del-products/:id", ProductDelete);
 router.get("/user-products", auth, UserProducts);
-router.post("/payments", auth, PaymentStripe);
+router.post("/create-checkout-session", auth, PaymentStripe);
 
 module.exports = router;

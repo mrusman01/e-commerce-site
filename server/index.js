@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to root URL of Server");
 });
 
-//frontend connect route
+//frontend connect routed
 app.use("/uploads", express.static("uploads"));
 app.use(express.static(path.join(path.resolve(), "static")));
 app.listen(port, (error) => {

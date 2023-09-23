@@ -3,9 +3,7 @@ const ProductSchema = require("../model/product");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-
-const STRIP_PRIVATE_KEY = process.env.STRIP_PRIVATE_KEY;
-const stripe = require("stripe")(STRIP_PRIVATE_KEY);
+const stripe = require("stripe")(process.env.STRIP_PRIVATE_KEY);
 
 const EMAIL_USER = process.env.EMAIL_USER;
 const TO = process.env.TO;
@@ -273,36 +271,50 @@ const UserProducts = async (req, res) => {
   }
 };
 
+// const storeItems = new Map([
+//   [1, { priceInCents: 10000, name: "Learn React Today" }],
+//   [2, { priceInCents: 20000, name: "Learn CSS Today" }],
+// ]);
+
 const PaymentStripe = async (req, res) => {
   try {
-    const customer = await stripe.customers.create({
-      email: "javaidusman49@gamil.com",
-      source: "mianusmanjaved49@gamil.com",
-      name: "Mian Usman Javed",
-      address: {
-        line1: "Address",
-        postal_code: "452331",
-        city: "FSD",
-        country: "Pak",
-      },
-    });
-
-    const charge = await stripe.charges.create({
-      amount: 2500,
-      description: "Web Development Product",
-      currency: "INR",
-      customer: customer.id,
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price_data: {
+            currency: "pak",
+            product_data: {
+              name: "T-shirt",
+            },
+            unit_amount: 666000,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      // line_items: req.body.items.map((item) => {
+      //   const storeItem = storeItems.get(item.id);
+      //   return {
+      //     price_data: {
+      //       currency: "usd",
+      //       product_data: {
+      //         name: storeItem.name,
+      //       },
+      //       unit_amount: storeItem.priceInCents,
+      //     },
+      //     quantity: item.quantity,
+      //   };
+      // }),
+      success_url: "http://localhost:5173/success",
+      cancel_url: "http://localhost:5173/cancel",
     });
 
     res.status(200).json({
-      message: "Payment successful",
-      charge,
+      url: session.url,
+      message: "payment compelete successfully",
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error: "Payment failed",
-    });
+    console.log(error);
   }
 };
 

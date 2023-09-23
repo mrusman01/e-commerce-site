@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import AddProduct from "./pages/AddProduct";
 import AddToCart from "./pages/AddToCart";
 import UserProducts from "./pages/UserProducts";
+import Payment from "./components/Payment";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/add-products" element={<AddProduct />} />
         <Route path="/cart-products" element={<AddToCart />} />
         <Route path="/user-products" element={<UserProducts />} />
+        <Route path="/create-checkout-session" element={<Payment />} />
       </Route>
     </Routes>
   );
