@@ -271,50 +271,38 @@ const UserProducts = async (req, res) => {
   }
 };
 
-// const storeItems = new Map([
-//   [1, { priceInCents: 10000, name: "Learn React Today" }],
-//   [2, { priceInCents: 20000, name: "Learn CSS Today" }],
-// ]);
-
 const PaymentStripe = async (req, res) => {
+  const item = req.body;
+
   try {
     const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
-            currency: "pak",
+            currency: "usd",
             product_data: {
-              name: "T-shirt",
+              name: item.title,
             },
-            unit_amount: 666000,
+            unit_amount: item.price,
           },
-          quantity: 1,
+          quantity: item.quantity,
         },
       ],
       mode: "payment",
-      // line_items: req.body.items.map((item) => {
-      //   const storeItem = storeItems.get(item.id);
-      //   return {
-      //     price_data: {
-      //       currency: "usd",
-      //       product_data: {
-      //         name: storeItem.name,
-      //       },
-      //       unit_amount: storeItem.priceInCents,
-      //     },
-      //     quantity: item.quantity,
-      //   };
-      // }),
       success_url: "http://localhost:5173/success",
       cancel_url: "http://localhost:5173/cancel",
     });
 
     res.status(200).json({
       url: session.url,
-      message: "payment compelete successfully",
+      message: "Payment complete successfully",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the session" });
   }
 };
 

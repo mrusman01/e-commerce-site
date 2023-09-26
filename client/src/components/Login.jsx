@@ -40,7 +40,7 @@ const Login = () => {
         "http://localhost:4000/login",
         formData
       );
-      console.log(response);
+      // console.log(response);
       const token = response.data.token;
       localStorage.setItem("token", token);
       navigate("/");

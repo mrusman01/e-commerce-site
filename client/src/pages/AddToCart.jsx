@@ -14,7 +14,8 @@ import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { remove } from "../services/productSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 // import { Alert, Snackbar } from "@mui/material";
 
@@ -35,14 +36,42 @@ const defaultTheme = createTheme();
 
 const AddToCart = () => {
   const data = useSelector((state) => state.products.items);
+  const [paymentUrl, setPaymentUrl] = useState("");
   const dispatch = useDispatch();
   const deleteProduct = (item) => {
     dispatch(remove(item._id));
   };
 
+  const handlePayment = async (item) => {
+    // const products = JSON.stringify(item);
+    // console.log(item);
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/create-checkout-session",
+        item,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
+      const { url } = response.data;
+      // console.log(message);
+      // console.log(url);
+      setPaymentUrl(url);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     // console.log("data -----");
   }, [data]);
+
+  useEffect(() => {
+    // console.log(paymentUrl, "data -----");
+    window.open(paymentUrl, "_blank", "payment");
+  }, [paymentUrl]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -118,6 +147,12 @@ const AddToCart = () => {
                       <Typography>Discription: {item.description}</Typography>
                     </CardContent>
                     <CardActions>
+                      <Button
+                        variant="contained"
+                        onClick={() => handlePayment(item)}
+                      >
+                        Buy
+                      </Button>
                       <Button
                         variant="contained"
                         onClick={() => deleteProduct(item)}
