@@ -17,7 +17,7 @@ import { remove } from "../services/productSlice";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-// import { Alert, Snackbar } from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
 
 function Copyright() {
   return (
@@ -35,16 +35,17 @@ function Copyright() {
 const defaultTheme = createTheme();
 
 const AddToCart = () => {
+  const [open, setOpen] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
+  const [error, setError] = useState(null);
+
   const data = useSelector((state) => state.products.items);
-  const [paymentUrl, setPaymentUrl] = useState("");
   const dispatch = useDispatch();
   const deleteProduct = (item) => {
     dispatch(remove(item._id));
   };
 
   const handlePayment = async (item) => {
-    // const products = JSON.stringify(item);
-    // console.log(item);
     try {
       const response = await axios.post(
         "http://localhost:4000/create-checkout-session",
@@ -55,23 +56,25 @@ const AddToCart = () => {
           },
         }
       );
-      const { url } = response.data;
-      // console.log(message);
-      // console.log(url);
-      setPaymentUrl(url);
+      const { url, message } = response.data;
+      window.open(url, "_blank");
+      setResponseMessage(message);
     } catch (error) {
       console.error(error);
+      setError(error);
+      setResponseMessage(error.response?.data?.message || "An error occurred.");
     }
   };
 
-  useEffect(() => {
-    // console.log("data -----");
-  }, [data]);
+  useEffect(() => {}, [data]);
 
-  useEffect(() => {
-    // console.log(paymentUrl, "data -----");
-    window.open(paymentUrl, "_blank", "payment");
-  }, [paymentUrl]);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -189,7 +192,7 @@ const AddToCart = () => {
         <Copyright />
       </Box>
       {/* End footer */}
-      {/* <Snackbar
+      <Snackbar
         open={open}
         autoHideDuration={4000}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -208,7 +211,7 @@ const AddToCart = () => {
             {responseMessage}
           </Alert>
         )}
-      </Snackbar> */}
+      </Snackbar>
     </ThemeProvider>
   );
 };
