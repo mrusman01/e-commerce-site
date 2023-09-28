@@ -11,6 +11,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Alert, Snackbar } from "@mui/material";
 
 function Copyright() {
   return (
@@ -28,6 +31,35 @@ function Copyright() {
 const defaultTheme = createTheme();
 
 const UserProducts = () => {
+  const [products, setProducts] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
+  const [error, setError] = useState(null);
+  const getUserData = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/user-products", {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
+      const { products } = response.data;
+      setProducts(products);
+    } catch (error) {
+      console.log(error);
+      setError(error);
+      setResponseMessage(error.response?.data?.message || "An error occurred.");
+    }
+  };
+  useEffect(() => {
+    getUserData();
+  }, []);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -47,7 +79,7 @@ const UserProducts = () => {
               color="text.primary"
               gutterBottom
             >
-              Add to Cart
+              My products
             </Typography>
             <Typography
               variant="h5"
@@ -72,7 +104,7 @@ const UserProducts = () => {
         </Box>
         <Container sx={{ py: 5 }} maxWidth="lg">
           <Grid container spacing={4}>
-            {[1, 2, 3, 4].map((item, i) => (
+            {products.map((item, i) => (
               <Grid item key={i} xs={12} sm={6} md={4}>
                 <Card
                   sx={{
@@ -125,7 +157,7 @@ const UserProducts = () => {
         <Copyright />
       </Box>
       {/* End footer */}
-      {/* <Snackbar
+      <Snackbar
         open={open}
         autoHideDuration={4000}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -144,7 +176,7 @@ const UserProducts = () => {
             {responseMessage}
           </Alert>
         )}
-      </Snackbar> */}
+      </Snackbar>
     </ThemeProvider>
   );
 };

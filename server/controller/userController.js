@@ -78,6 +78,7 @@ const Login = async (req, res) => {
   let { email, password } = req.body;
   try {
     const user = await UserData.findOne({ email: email });
+
     if (!user) {
       return res.status(400).send("User not found --");
     }
@@ -257,14 +258,17 @@ const ProductDelete = async (req, res) => {
 const UserProducts = async (req, res) => {
   let { _id } = req.user;
   try {
-    const userData = await UserData.findOne(_id);
-    console.log(userData, "=====");
-    if (!userData) {
+    const getUserProducts = await ProductSchema.find({
+      user: { $eq: _id },
+    });
+
+    if (!getUserProducts) {
       return res.status(400).send({ message: "not aviliabe" });
     }
     return res.status(200).json({
       success: true,
-      message: "successfull",
+      message: "Product fetch successfully",
+      products: getUserProducts,
     });
   } catch (error) {
     console.log(error);

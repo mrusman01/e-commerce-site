@@ -19,7 +19,7 @@ const auth = async (req, res, next) => {
 
       try {
         const user = await UserData.findOne({ email: userEmail });
-        // console.log(user, "____");
+
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }

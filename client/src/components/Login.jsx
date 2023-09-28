@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -15,10 +15,12 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Alert, Snackbar } from "@mui/material";
+import { AuthContext } from "../services/authProvider";
 
 const defaultTheme = createTheme();
 
 const Login = () => {
+  const { setRole } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [error, setError] = useState(null);
@@ -40,12 +42,14 @@ const Login = () => {
         "http://localhost:4000/login",
         formData
       );
-      // console.log(response);
+      const getRole = response.data?.user?.roles;
+      localStorage.setItem("roles", getRole);
+      setRole(getRole);
       const token = response.data.token;
       localStorage.setItem("token", token);
       navigate("/");
       setResponseMessage(response.data.message);
-      // console.log(response.data.message);
+
       setOpen(true);
     } catch (error) {
       setError(error);

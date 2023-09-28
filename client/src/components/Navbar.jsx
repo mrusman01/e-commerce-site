@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,25 +11,29 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { NavLink } from "react-router-dom";
-
-const pages = [
-  { link: "/products", btn: "Products" },
-  { link: "/cart-products", btn: "Cart" },
-  { link: "/add-products", btn: "Add Products" },
-  { link: "/user-products", btn: "My Products" },
-  { link: "/create-checkout-session", btn: "payments" },
-];
-const settings = [
-  { link: "#", name: "Profile" },
-  { link: "#", name: "Account" },
-  { link: "#", name: "Dashboard" },
-  { link: "#", name: "Logout" },
-];
+import { NavLink, useNavigate } from "react-router-dom";
+import { AuthContext } from "../services/authProvider";
 
 const Navbar = () => {
+  const { role } = useContext(AuthContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
+  const settings = [
+    { link: "#", name: "Profile" },
+    { link: "#", name: "Account" },
+    { link: "#", name: "Dashboard" },
+  ];
+
+  const pages = [
+    { link: "/products", btn: "Products" },
+    { link: "/cart-products", btn: "Cart" },
+    { link: "/user-products", btn: "My Products" },
+    role === "admin" && {
+      link: "/add-products",
+      btn: "Add Products",
+    },
+  ];
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -37,7 +41,10 @@ const Navbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  const logoutHandler = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -80,12 +87,13 @@ const Navbar = () => {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, gap: 3, display: "flex" }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="U" src="/static/images/avatar/3.jpg" />
               </IconButton>
             </Tooltip>
+
             <Menu
               sx={{ mt: "45px" }}
               //   id="menu-appbar"
@@ -104,6 +112,14 @@ const Navbar = () => {
                 </MenuItem>
               ))}
             </Menu>
+
+            <Button
+              variant="outlined"
+              sx={{ color: "#fff", border: "2px solid #BDBDBD" }}
+              onClick={logoutHandler}
+            >
+              Logout
+            </Button>
           </Box>
         </Toolbar>
       </Container>

@@ -1,25 +1,22 @@
-import { useNavigate } from "react-router-dom";
 import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-
   const authToken = localStorage.getItem("token");
+  const getRole = localStorage.getItem("roles");
+  const [role, setRole] = useState(getRole);
 
   useEffect(() => {
     if (!authToken) {
       localStorage.clear();
-      // navigate("/login");
     }
   });
 
   const contextValue = {
-    user,
-    setUser,
     authToken,
+    setRole,
+    role,
   };
 
   return (

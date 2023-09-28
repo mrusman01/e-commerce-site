@@ -8,8 +8,7 @@ export default function ProtectRouter() {
   const { authToken } = useContext(AuthContext);
 
   if (!authToken) {
-    navigate("/login");
-    return null;
+    return navigate("/login");
   }
 
   return (
