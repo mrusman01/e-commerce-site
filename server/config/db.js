@@ -3,10 +3,7 @@ const connectDatabase = () => {
   const db = process.env.DB;
 
   mongoose
-    .connect(db, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
+    .connect(db)
     .then(() => {
       console.log(`🚀🚀 MongoDB Connected succesfully------ `);
     });

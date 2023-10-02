@@ -82,6 +82,9 @@ const Login = async (req, res) => {
     if (!user) {
       return res.status(400).send("User not found --");
     }
+    if (!user.verified) {
+      return res.status(400).send("verify your Email First");
+    }
 
     let validPassword = bcrypt.compareSync(
       password,

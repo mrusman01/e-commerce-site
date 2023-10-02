@@ -1,5 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
-
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -13,11 +12,13 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { remove } from "../services/productSlice";
-import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-
 import { Alert, Snackbar } from "@mui/material";
+
+import { remove } from "../services/productSlice";
+
+
 
 function Copyright() {
   return (
@@ -35,12 +36,13 @@ function Copyright() {
 const defaultTheme = createTheme();
 
 const AddToCart = () => {
+  const data = useSelector((state) => state.products.items);
+  const dispatch = useDispatch();
+  
   const [open, setOpen] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [error, setError] = useState(null);
 
-  const data = useSelector((state) => state.products.items);
-  const dispatch = useDispatch();
   const deleteProduct = (item) => {
     dispatch(remove(item._id));
   };
@@ -66,8 +68,6 @@ const AddToCart = () => {
     }
   };
 
-  useEffect(() => {}, [data]);
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -75,6 +75,8 @@ const AddToCart = () => {
 
     setOpen(false);
   };
+
+  useEffect(() => {}, [data]);
 
   return (
     <ThemeProvider theme={defaultTheme}>

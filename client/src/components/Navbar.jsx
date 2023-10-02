@@ -14,16 +14,18 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../services/authProvider";
 
+const settings = [
+  { link: "#", name: "Profile" },
+  { link: "#", name: "Account" },
+  { link: "#", name: "Dashboard" },
+];
+
 const Navbar = () => {
   const { role } = useContext(AuthContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
 
-  const settings = [
-    { link: "#", name: "Profile" },
-    { link: "#", name: "Account" },
-    { link: "#", name: "Dashboard" },
-  ];
+ 
 
   const pages = [
     { link: "/products", btn: "Products" },
