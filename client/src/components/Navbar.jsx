@@ -25,12 +25,11 @@ const Navbar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
 
- 
-
   const pages = [
     { link: "/products", btn: "Products" },
     { link: "/cart-products", btn: "Cart" },
     { link: "/user-products", btn: "My Products" },
+    { link: "/chat-app", btn: "Chat App" },
     role === "admin" && {
       link: "/add-products",
       btn: "Add Products",

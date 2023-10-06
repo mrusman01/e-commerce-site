@@ -42,6 +42,7 @@ const Login = () => {
         "http://localhost:4000/login",
         formData
       );
+
       const getRole = response.data?.user?.roles;
       localStorage.setItem("roles", getRole);
       setRole(getRole);

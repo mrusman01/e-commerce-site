@@ -3,6 +3,7 @@ const ProductSchema = require("../model/product");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const ChatModel = require("../model/chat");
 const stripe = require("stripe")(process.env.STRIP_PRIVATE_KEY);
 
 const EMAIL_USER = process.env.EMAIL_USER;
@@ -82,9 +83,9 @@ const Login = async (req, res) => {
     if (!user) {
       return res.status(400).send("User not found --");
     }
-    if (!user.verified) {
-      return res.status(400).send("verify your Email First");
-    }
+    // if (!user.verified) {
+    //   return res.status(400).send("verify your Email First");
+    // }
 
     let validPassword = bcrypt.compareSync(
       password,
@@ -313,6 +314,66 @@ const PaymentStripe = async (req, res) => {
   }
 };
 
+const getAllUser = async (req, res) => {
+  let { _id } = req.user;
+  try {
+    const allUser = await UserData.find();
+    const getData = {
+      name: allUser,
+    };
+    res.status(200).json({
+      user: allUser,
+      message: "all user",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const chatApplication = async (req, res) => {
+  const { _id } = req.user;
+  let { text, userId } = req.body;
+
+  try {
+    const chatData = new ChatModel({
+      text: text,
+      myId: _id,
+      userId: userId,
+    });
+
+    await chatData.save();
+
+    res.status(200).json({
+      userMessage: chatData,
+      message: "Message sent successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "An error occurred while saving the message",
+    });
+  }
+};
+const getMessages = async (req, res) => {
+  const { _id } = req.user;
+  let { id } = req.params;
+  console.log(id);
+
+  try {
+    const findUser = await ChatModel.find({
+      myId: _id,
+      userId: id,
+    });
+
+    res.status(200).json({
+      userMessages: findUser,
+      message: "get message successfully",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   SignUp,
   Login,
@@ -323,4 +384,7 @@ module.exports = {
   ProductDelete,
   UserProducts,
   PaymentStripe,
+  getAllUser,
+  chatApplication,
+  getMessages,
 };

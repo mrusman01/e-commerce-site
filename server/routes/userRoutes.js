@@ -8,6 +8,9 @@ const {
   ProductDelete,
   UserProducts,
   PaymentStripe,
+  getAllUser,
+  chatApplication,
+  getMessages,
 } = require("../controller/userController");
 const upload = require("../middleware/multer");
 const auth = require("../middleware/auth");
@@ -26,5 +29,8 @@ router.get(
 router.delete("/del-products/:id", ProductDelete);
 router.get("/user-products", auth, UserProducts);
 router.post("/create-checkout-session", auth, PaymentStripe);
+router.get("/all-user", auth, getAllUser);
+router.post("/chat-application", auth, chatApplication);
+router.get("/chat-application/getMessages/:id", auth, getMessages);
 
 module.exports = router;
