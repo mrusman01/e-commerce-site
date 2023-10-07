@@ -10,6 +10,6 @@ const {
 
 router.get("/all-user", auth, getAllUser);
 router.post("/chat-application", auth, chatApplication);
-router.get("/chat-application/getMessages/:id", auth, getMessages);
+router.get("/chat-application/getMessages/:id/:autherId", auth, getMessages);
 
 module.exports = router;

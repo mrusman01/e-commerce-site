@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
@@ -15,6 +14,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import { CutomTextField } from "./CustomComponents";
 // import { useNavigate } from "react-router-dom";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -103,58 +103,43 @@ const SignUp = () => {
             noValidate
             sx={{ mt: 1 }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="UserName"
-              name="username"
-              autoComplete="username"
+            <CutomTextField
+              id={"username"}
+              label={"UserName"}
+              name={"username"}
+              autoComplete={"username"}
               onChange={(e) => setName(e.target.value)}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+            <CutomTextField
+              id={"email"}
+              label={"Email Address"}
+              name={"email"}
+              autoComplete={"email"}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+            <CutomTextField
+              name={"password"}
+              label={"Password"}
+              type={"password"}
+              id={"password"}
+              autoComplete={"current-password"}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="Phone"
-              label="Phone"
-              type=" number"
-              id="phone"
-              autoComplete="current-number"
+            <CutomTextField
+              name={"Phone"}
+              label={"Phone"}
+              type={"number"}
+              id={"phone"}
+              autoComplete={"current-number"}
               onChange={(e) => setNumber(e.target.value)}
             />
 
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="avatar"
+            <CutomTextField
+              name={"avatar"}
               label=""
-              type="file"
-              id="avatar"
-              autoComplete="current-file"
+              type={"file"}
+              id={"avatar"}
+              autoComplete={"current-file"}
               onChange={(e) => setAvatar(e.target.files[0])}
             />
             <FormControlLabel

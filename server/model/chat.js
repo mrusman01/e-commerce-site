@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const Chat = new mongoose.Schema({
   text: String,
-  myId: String,
-  userId: String,
+  auther: String,
+  anotherUser: String,
 });
 
 const ChatModel = mongoose.model("Chat", Chat);

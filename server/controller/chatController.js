@@ -3,11 +3,9 @@ const ChatModel = require("../model/chat");
 
 const getAllUser = async (req, res) => {
   let { _id } = req.user;
+
   try {
     const allUser = await UserData.find();
-    const getData = {
-      name: allUser,
-    };
     res.status(200).json({
       user: allUser,
       message: "all user",
@@ -18,14 +16,13 @@ const getAllUser = async (req, res) => {
 };
 
 const chatApplication = async (req, res) => {
-  const { _id } = req.user;
-  let { text, userId } = req.body;
+  const { auther, anotherUser, text } = req.body;
 
   try {
     const chatData = new ChatModel({
       text: text,
-      myId: _id,
-      userId: userId,
+      auther: auther,
+      anotherUser: anotherUser,
     });
 
     await chatData.save();
@@ -42,17 +39,30 @@ const chatApplication = async (req, res) => {
   }
 };
 const getMessages = async (req, res) => {
-  const { _id } = req.user;
-  let { id } = req.params;
+  let { id, autherId } = req.params;
 
   try {
-    const findUser = await ChatModel.find({
-      myId: _id,
-      userId: id,
+    const findUser1 = await ChatModel.find({
+      auther: autherId,
+      anotherUser: id,
     });
-    console.log(findUser, "======");
+    const findUser = await ChatModel.find({
+      auther: id,
+      anotherUser: autherId,
+    });
+
+    // if (!findUser) {
+    //   findUser = await ChatModel.find({
+    //     auther: id,
+    //     anotherUser: autherId,
+    //   });
+    // }
+
+    // console.log(findUser1, "----");
+    // console.log(findUser, "----222222222");
     res.status(200).json({
-      userMessages: findUser,
+      userMessages: findUser1,
+      userMessagesAnother: findUser,
       message: "get message successfully",
     });
   } catch (error) {

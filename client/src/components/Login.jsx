@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
@@ -12,15 +11,17 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Alert, Snackbar } from "@mui/material";
+
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Alert, Snackbar } from "@mui/material";
 import { AuthContext } from "../services/authProvider";
+import { CutomTextField } from "./CustomComponents";
 
 const defaultTheme = createTheme();
 
 const Login = () => {
-  const { setRole } = useContext(AuthContext);
+  const { setRole, setAutherId } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [error, setError] = useState(null);
@@ -42,7 +43,9 @@ const Login = () => {
         "http://localhost:4000/login",
         formData
       );
-
+      // console.log(response, "-----");
+      const { _id } = response.data.user;
+      setAutherId(_id);
       const getRole = response.data?.user?.roles;
       localStorage.setItem("roles", getRole);
       setRole(getRole);
@@ -91,25 +94,18 @@ const Login = () => {
             noValidate
             sx={{ mt: 1 }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
+            <CutomTextField
+              id={"email"}
+              label={"Email Address"}
+              name={"email"}
+              autoComplete={"email"}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
+            <CutomTextField
+              name={"password"}
+              label={"Password"}
+              type={"password"}
+              id={"password"}
               autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
             />

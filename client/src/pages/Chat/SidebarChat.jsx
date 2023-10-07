@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
 import axios from "axios";
 import { Link } from "react-router-dom";
+// import { AuthContext } from "../../services/authProvider";
 
 const SidebarChat = () => {
+  // const { autherId } = useContext(AuthContext);
+
   const [userName, setUserName] = useState([]);
   const getUser = async () => {
     try {
