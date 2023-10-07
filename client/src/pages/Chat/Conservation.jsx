@@ -28,28 +28,25 @@ const Conservation = () => {
     }
   };
 
-  // const getMessages = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:4000/chat-application/getMessages/${id}`,
-  //       {
-  //         headers: {
-  //           token: localStorage.getItem("token"),
-  //         },
-  //       }
-  //     );
-  //     console.log(response.data);
-  //     const { userMessages } = response.data;
-  //     setMessageList(userMessages);
-  //     console.log(messageList, "====");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const getMessages = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/chat-application/getMessages/${id}`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
+      console.log(response.data, "=========");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  // useEffect(() => {
-  //   getMessages();
-  // }, []);
+  useEffect(() => {
+    getMessages();
+  }, []);
 
   return (
     <div>

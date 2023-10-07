@@ -4,13 +4,21 @@ const cors = require("cors");
 const path = require("path");
 app.use(express.json());
 app.use(cors());
+const connectDb = require("./config/db");
 require("dotenv").config({ path: "./.env" });
 
-const connectDb = require("./config/db");
 const port = process.env.PORT;
 const UserRouter = require("./routes/userRoutes");
+const ProductRoutes = require("./routes/productRoutes");
+const PaymentRoute = require("./routes/paymentRoute");
+const ChatRoutes = require("./routes/chatRoutes");
+
 connectDb();
+
 app.use("/", UserRouter);
+app.use("/", ProductRoutes);
+app.use("/", PaymentRoute);
+app.use("/", ChatRoutes);
 app.get("/", (req, res) => {
   res.status(200);
   res.send("Welcome to root URL of Server");
