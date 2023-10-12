@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -28,8 +28,24 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
+  console.log(isChecked, "----");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedPassword = localStorage.getItem("rememberedPassword");
+    if (savedPassword) {
+      console.log(isChecked, "--password--");
+
+      setPassword(savedPassword);
+      setIsChecked(true);
+    }
+  }, []);
+
+  const handleRememberPassword = () => {
+    setIsChecked(!isChecked);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,6 +67,11 @@ const Login = () => {
       setRole(getRole);
       const token = response.data.token;
       localStorage.setItem("token", token);
+      if (isChecked) {
+        localStorage.setItem("rememberedPassword", password);
+      } else {
+        localStorage.removeItem("rememberedPassword");
+      }
       navigate("/");
       setResponseMessage(response.data.message);
 
@@ -106,12 +127,20 @@ const Login = () => {
               label={"Password"}
               type={"password"}
               id={"password"}
+              value={password}
               autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
             />
 
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={
+                <Checkbox
+                  value="remember"
+                  color="primary"
+                  checked={isChecked}
+                  onClick={handleRememberPassword}
+                />
+              }
               label="Remember me"
             />
             <Button

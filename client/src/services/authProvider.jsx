@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (!authToken) {
-      localStorage.clear();
+      localStorage.removeItem("token");
     }
   });
 

@@ -43,7 +43,7 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
   const logoutHandler = () => {
-    localStorage.clear();
+    localStorage.removeItem("token");
     navigate("/login");
   };
   return (

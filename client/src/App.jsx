@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Products from "./pages/Products";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
@@ -33,8 +33,9 @@ function App() {
         <Route path="/cart-products" element={<AddToCart />} />
         <Route path="/user-products" element={<UserProducts />} />
         <Route path="/create-checkout-session" element={<Payment />} />
-        <Route path="/chat-app" element={<Chat />} />
-        <Route path="/chat-app/:id" element={<Conservation />} />
+        <Route path="/chat-app" element={<Chat />}>
+          <Route path="/chat-app/:id" element={<Conservation />} />
+        </Route>
       </Route>
     </Routes>
   );

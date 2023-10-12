@@ -1,6 +1,7 @@
 import { Container, Grid } from "@mui/material";
-import SidebarChat from "./SidebarChat";
+import { Outlet } from "react-router-dom";
 
+import SidebarChat from "./SidebarChat";
 import Conservation from "./Conservation";
 
 const Chat = () => {
@@ -11,12 +12,13 @@ const Chat = () => {
           item
           xs={12}
           md={3}
-          sx={{ border: "2px solid red", height: "100vh" }}
+          sx={{ border: "2px solid #000", height: "100vh" }}
         >
           <SidebarChat />
         </Grid>
         <Grid item xs={12} md={8}>
-          <Conservation />
+          <Outlet />
+          {/* <Conservation /> */}
         </Grid>
       </Grid>
     </Container>

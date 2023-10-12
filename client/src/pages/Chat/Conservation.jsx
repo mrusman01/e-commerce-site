@@ -59,19 +59,23 @@ const Conservation = () => {
     <div>
       <Grid container>
         <Grid item xs={12} md={6}>
-          ------------ another user---------
           {messageList2.map((item, i) => (
-            <div key={i}>
-              <Typography>{item.text}</Typography>
-            </div>
+            <Box key={i} sx={{ my: "10px" }}>
+              <Typography sx={{ textAlign: "left", fontWeight: "bold" }}>
+                {item.text}
+              </Typography>
+            </Box>
           ))}
         </Grid>
         <Grid item xs={12} md={6}>
-          me
           {messageList.map((item, i) => (
-            <div key={i}>
-              <Typography>{item.text}</Typography>
-            </div>
+            <Box key={i} sx={{ my: "10px" }}>
+              <Typography
+                sx={{ textAlign: "end", color: "#1976D2", fontWeight: "bold" }}
+              >
+                {item.text}
+              </Typography>
+            </Box>
           ))}
         </Grid>
       </Grid>
@@ -87,9 +91,17 @@ const Conservation = () => {
           autoFocus
           onChange={(e) => setNewMessage(e.target.value)}
         />
-        <Button variant="contained" onClick={handleSendMessage}>
-          Send
-        </Button>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button variant="contained" onClick={handleSendMessage}>
+            Send
+          </Button>
+        </Box>
         <br />
         {/* <Button variant="contained" onClick={getMessages}>
           get message
