@@ -1,4 +1,6 @@
 import { useContext, useEffect, useState } from "react";
+import axios from "axios";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,7 +15,6 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Alert, Snackbar } from "@mui/material";
 
-import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../services/authProvider";
 import { CutomTextField } from "./CustomComponents";
@@ -29,15 +30,14 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  console.log(isChecked, "----");
+  // console.log(isChecked, "----");
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const savedPassword = localStorage.getItem("rememberedPassword");
     if (savedPassword) {
-      console.log(isChecked, "--password--");
-
+      // console.log(isChecked, "--password--");
       setPassword(savedPassword);
       setIsChecked(true);
     }

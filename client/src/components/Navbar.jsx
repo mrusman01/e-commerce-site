@@ -30,6 +30,7 @@ const Navbar = () => {
     { link: "/cart-products", btn: "Cart" },
     { link: "/user-products", btn: "My Products" },
     { link: "/chat-app", btn: "Chat App" },
+    { link: "/group", btn: "Groups" },
     role === "admin" && {
       link: "/add-products",
       btn: "Add Products",

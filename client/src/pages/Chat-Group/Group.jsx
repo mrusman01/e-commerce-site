@@ -1,9 +1,9 @@
 import { Container, Grid } from "@mui/material";
-import { Outlet } from "react-router-dom";
 
-import SidebarChat from "./SidebarChat";
+import CreateGroup from "./CreateGroup";
+import GroupChat from "./GroupChat";
 
-const Chat = () => {
+const Group = () => {
   return (
     <Container maxWidth="xl">
       <Grid container justifyContent={"space-between"}>
@@ -13,15 +13,15 @@ const Chat = () => {
           md={3}
           sx={{ border: "2px solid #000", height: "100vh" }}
         >
-          <SidebarChat />
+          <CreateGroup />
         </Grid>
         <Grid item xs={12} md={8}>
-          <Outlet />
-          {/* <Conservation /> */}
+          {/* <Outlet /> */}
+          <GroupChat />
         </Grid>
       </Grid>
     </Container>
   );
 };
 
-export default Chat;
+export default Group;

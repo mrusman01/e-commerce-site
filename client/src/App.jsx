@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Products from "./pages/Products";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
@@ -13,6 +13,8 @@ import { useContext } from "react";
 import { AuthContext } from "./services/authProvider";
 import Chat from "./pages/Chat/Chat";
 import Conservation from "./pages/Chat/Conservation";
+import GroupChat from "./pages/Chat-Group/GroupChat";
+import Group from "./pages/Chat-Group/Group";
 
 function App() {
   const { role } = useContext(AuthContext);
@@ -36,6 +38,11 @@ function App() {
         <Route path="/chat-app" element={<Chat />}>
           <Route path="/chat-app/:id" element={<Conservation />} />
         </Route>
+        {/* <Route path="/group" element={<Group />}>
+          <Route path="/GroupChat" element={<GroupChat />} />
+        </Route> */}
+        <Route path="/group" element={<Group />} />
+        <Route path="/GroupChat" element={<GroupChat />} />
       </Route>
     </Routes>
   );
