@@ -7,6 +7,7 @@ const AuthProvider = ({ children }) => {
   const getRole = localStorage.getItem("roles");
   const [role, setRole] = useState(getRole);
   const [autherId, setAutherId] = useState("");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     if (!authToken) {
@@ -20,6 +21,8 @@ const AuthProvider = ({ children }) => {
     role,
     setAutherId,
     autherId,
+    userName,
+    setUserName,
   };
 
   return (

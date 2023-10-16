@@ -42,15 +42,16 @@ const getAllUser = async (req, res) => {
 };
 
 const GroupChat = async (req, res) => {
-  const { auther, otherUsers, text } = req.body;
+  const { auther, otherUsers, text, autherName } = req.body;
   try {
-    const allUser = await UserData.find();
+    const allUser = await UserData.find({ _id: { $ne: auther } });
     const getId = allUser.map((item) => item._id);
 
     const chatData = new GroupModel({
       text: text,
       auther: auther,
       otherUsers: getId,
+      autherName: autherName,
     });
 
     await chatData.save();
@@ -66,27 +67,23 @@ const GroupChat = async (req, res) => {
   }
 };
 const getMessages = async (req, res) => {
-  let { autherId } = req.params;
-  console.log(autherId);
-
+  const { autherId } = req.params;
+  // console.log(autherId, "autherId-----");
   try {
-    const allUser = await UserData.find();
+    const allUser = await UserData.find({ _id: { $ne: autherId } });
     const getId = allUser.map((item) => item._id);
 
     const autherMsg = await GroupModel.find({
       auther: autherId,
-      otherUsers: getId,
     });
-    console.log(autherMsg, "autherrr");
-
-    const findUser = await GroupModel.find({
-      auther: { $ne: getId },
+    const otherUsersMsg = await GroupModel.find({
+      auther: { $ne: autherId },
     });
-
-    res.status(200).json({
-      userMessages: autherMsg,
-      otherUsersMsg: findUser,
-      message: "get message successfully",
+    // console.log(otherUsersMsg, "otherUsers");
+    res.status(200).send({
+      autherMessages: autherMsg,
+      otherUsers: otherUsersMsg,
+      message: "get author  message",
     });
   } catch (error) {
     console.log(error);

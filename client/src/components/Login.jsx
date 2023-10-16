@@ -22,7 +22,7 @@ import { CutomTextField } from "./CustomComponents";
 const defaultTheme = createTheme();
 
 const Login = () => {
-  const { setRole, setAutherId } = useContext(AuthContext);
+  const { setRole, setAutherId, setUserName } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [error, setError] = useState(null);
@@ -60,7 +60,8 @@ const Login = () => {
         formData
       );
       // console.log(response, "-----");
-      const { _id } = response.data.user;
+      const { _id, name } = response.data.user;
+      setUserName(name);
       setAutherId(_id);
       const getRole = response.data?.user?.roles;
       localStorage.setItem("roles", getRole);

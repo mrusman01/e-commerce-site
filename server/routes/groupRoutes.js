@@ -4,6 +4,6 @@ const auth = require("../middleware/auth");
 
 const { GroupChat, getMessages } = require("../controller/GroupController");
 router.post("/group-chat", auth, GroupChat);
-router.get("/getMessages-chat/:id", auth, getMessages);
+router.get("/getMessages-chat/:autherId", auth, getMessages);
 
 module.exports = router;
