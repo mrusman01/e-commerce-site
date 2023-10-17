@@ -45,6 +45,9 @@ const Navbar = () => {
   };
   const logoutHandler = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("onwer");
+    localStorage.removeItem("onwerName");
+    localStorage.removeItem("roles");
     navigate("/login");
   };
   return (

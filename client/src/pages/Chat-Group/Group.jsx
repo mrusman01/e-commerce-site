@@ -10,12 +10,12 @@ const Group = () => {
         <Grid
           item
           xs={12}
-          md={3}
-          sx={{ border: "2px solid #000", height: "100vh" }}
+          md={2}
+          sx={{ border: "2px solid #000", height: "90vh" }}
         >
           <CreateGroup />
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={9}>
           {/* <Outlet /> */}
           <GroupChat />
         </Grid>

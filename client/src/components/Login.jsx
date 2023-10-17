@@ -63,6 +63,8 @@ const Login = () => {
       const { _id, name } = response.data.user;
       setUserName(name);
       setAutherId(_id);
+      localStorage.setItem("onwerName", name);
+      localStorage.setItem("onwer", _id);
       const getRole = response.data?.user?.roles;
       localStorage.setItem("roles", getRole);
       setRole(getRole);
