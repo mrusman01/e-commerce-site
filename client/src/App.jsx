@@ -15,6 +15,7 @@ import Chat from "./pages/Chat/Chat";
 import Conservation from "./pages/Chat/Conservation";
 import GroupChat from "./pages/Chat-Group/GroupChat";
 import Group from "./pages/Chat-Group/Group";
+import CreateGroups from "./pages/CreateGroups/CreateGroups";
 
 function App() {
   const { role } = useContext(AuthContext);
@@ -43,6 +44,7 @@ function App() {
         </Route> */}
         <Route path="/group" element={<Group />} />
         <Route path="/GroupChat" element={<GroupChat />} />
+        <Route path="/seprate-groups" element={<CreateGroups />} />
       </Route>
     </Routes>
   );

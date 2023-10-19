@@ -89,6 +89,7 @@ const Conservation = () => {
           label="Enter something"
           name="message"
           autoFocus
+          value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
         <Box

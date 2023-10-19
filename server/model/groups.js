@@ -5,6 +5,7 @@ const GroupChat = new mongoose.Schema({
   auther: String,
   autherName: String,
   otherUsers: Array,
+  // {timestamps: true,}
 });
 
 const GroupModel = mongoose.model("GroupChat", GroupChat);

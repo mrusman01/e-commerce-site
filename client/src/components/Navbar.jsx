@@ -31,6 +31,7 @@ const Navbar = () => {
     { link: "/user-products", btn: "My Products" },
     { link: "/chat-app", btn: "Chat App" },
     { link: "/group", btn: "Groups" },
+    { link: "/seprate-groups", btn: "Add Members" },
     role === "admin" && {
       link: "/add-products",
       btn: "Add Products",
@@ -49,6 +50,7 @@ const Navbar = () => {
     localStorage.removeItem("onwerName");
     localStorage.removeItem("roles");
     navigate("/login");
+    localStorage.removeItem("onwerId");
   };
   return (
     <AppBar position="static">

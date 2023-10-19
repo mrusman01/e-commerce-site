@@ -1,19 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { AuthContext } from "../../services/authProvider";
-import { useQuery } from "@tanstack/react-query";
 
 const GroupChat = () => {
   const { autherId, userName } = useContext(AuthContext);
   const [newMessage, setNewMessage] = useState("");
   const [list, setList] = useState([]);
-  const onwerName = localStorage.getItem("onwerName");
-  const onwer = localStorage.getItem("onwer");
+  const ref = useRef(null);
 
   const handleSendMessage = async () => {
-    const data = { text: newMessage, auther: onwer, autherName: onwerName };
+    const data = { text: newMessage, auther: autherId, autherName: userName };
 
     try {
       const response = await axios.post(
@@ -29,12 +28,13 @@ const GroupChat = () => {
     } catch (error) {
       console.log(error);
     }
+
     setNewMessage("");
   };
 
   const fetchData = async () => {
     const response = await axios.get(
-      `http://localhost:4000/getMessages-chat/${onwer}`,
+      `http://localhost:4000/getMessages-chat/${autherId}`,
       {
         headers: {
           token: localStorage.getItem("token"),
@@ -48,12 +48,21 @@ const GroupChat = () => {
     queryKey: ["getMessages-chat"],
     queryFn: fetchData,
     staleTime: 1000,
-    refetchInterval: 3000,
+    refetchInterval: 2000,
   });
 
   useEffect(() => {
-    setList(data.data.userMessage);
+    setList(data?.data?.userMessage);
   }, [data]);
+
+  useEffect(() => {
+    if (list.length) {
+      ref.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [list.length]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -74,10 +83,10 @@ const GroupChat = () => {
           p: 2,
         }}
       >
-        <Grid item xs={12}>
+        <Grid item xs={12} ref={ref}>
           {list.map((item, i) => (
             <Box key={i} sx={{ my: 1 }}>
-              {item.auther === onwer ? (
+              {item.auther === autherId ? (
                 <Typography
                   sx={{
                     textAlign: "right",
@@ -118,6 +127,7 @@ const GroupChat = () => {
           label="Enter something"
           name="message"
           autoFocus
+          value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
 
