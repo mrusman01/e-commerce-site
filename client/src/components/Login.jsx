@@ -62,6 +62,8 @@ const Login = () => {
       // console.log(response, "-----");
       const { _id, name } = response.data.user;
       localStorage.setItem("onwerId", _id);
+      localStorage.setItem("name", name);
+
       setUserName(name);
       setAutherId(_id);
 

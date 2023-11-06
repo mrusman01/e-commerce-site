@@ -3,20 +3,6 @@ const GroupModel = require("../model/groups");
 const ChatModel = require("../model/chat");
 const MemberGroups = require("../model/groupCreate");
 
-const getAllUser = async (req, res) => {
-  let { _id } = req.user;
-
-  try {
-    const allUser = await UserData.find();
-    res.status(200).json({
-      user: allUser,
-      message: "all user",
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 const GroupChat = async (req, res) => {
   const { auther, otherUsers, text, autherName } = req.body;
   try {
@@ -60,10 +46,9 @@ const getMessages = async (req, res) => {
 
 const createGroups = async (req, res) => {
   const { memberEmail, onwerId } = req.body;
-  // console.log(memberEmail, onwerId, "----");
 
   try {
-    const findUser = await UserData.findOne({ email: memberEmail });
+    const findUser = await UserData.findOne({ email: memberEmail.user });
     if (!findUser) {
       res.status(400).json({
         message: "user not found",
@@ -78,7 +63,7 @@ const createGroups = async (req, res) => {
     };
     const newGroup = new MemberGroups({
       onwerId: onwerId,
-      groupName: findUser.name,
+      groupName: memberEmail.groupName,
       addMembers: userData,
     });
     await newGroup.save();
@@ -92,8 +77,60 @@ const createGroups = async (req, res) => {
   }
 };
 
+const allGroups = async (req, res) => {
+  try {
+    const groups = await MemberGroups.find();
+    console.log(groups);
+    res.status(200).send({ allGroups: groups, message: "all groups found" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const allGroupMembers = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const memberData = await MemberGroups.find({ _id: id });
+
+    if (memberData.length === 0) {
+      return res.status(404).send({ message: "Group not found" });
+    }
+
+    const memberArray = memberData.map((item) => item.addMembers);
+
+    res.status(200).json({ messages: memberArray, message: "All members" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+};
+
+const getMemberMessages = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const memberData = await MemberGroups.find({ _id: id });
+    console.log(memberData);
+
+    if (memberData.length === 0) {
+      return res.status(404).send({ message: "Group not found" });
+    }
+
+    const membersMsg = memberData.map((item) => item.messages);
+
+    // console.log(membersMsg, "====");
+
+    res.status(200).json({ messages: membersMsg, message: "All messages" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+};
+
 const addMemberGroup = async (req, res) => {
-  const { onwerId, memberEmail } = req.body;
+  const { onwerId, memberEmail, _id } = req.body;
+  console.log("idddd", _id);
 
   try {
     const findMember = await UserData.findOne({ email: memberEmail });
@@ -113,7 +150,7 @@ const addMemberGroup = async (req, res) => {
     };
 
     const addGroup = await MemberGroups.findOneAndUpdate(
-      { onwerId: onwerId },
+      { _id: _id },
       { $push: { addMembers: userData } }
     );
 
@@ -127,17 +164,64 @@ const addMemberGroup = async (req, res) => {
 };
 
 const sendMessage = async (req, res) => {
-  const { text, onwerId, memberEmail } = req.body;
-  // console.log(memberEmail, onwerId, text, "----");
+  const { text, onwerId, name, _id } = req.body;
 
   try {
-    const addGroup = await MemberGroups.findOne({
-      addMembers: { $elemMatch: { userId: onwerId } },
+    const addGroup = await MemberGroups.find({
+      "addMembers.userId": onwerId,
     });
     console.log(addGroup, "----");
-    res.status(200).json({ message: addGroup });
+
+    if (!addGroup) {
+      res.status(400).send({ message: "memeber is not found" });
+    }
+    const userMessages = {
+      memberId: onwerId,
+      text: text,
+      name: name,
+    };
+
+    console.log(userMessages.memberId, "----user messages input");
+
+    const messages = await MemberGroups.findOneAndUpdate(
+      { _id: _id },
+      { $push: { messages: userMessages } }
+    );
+
+    console.log(messages, "----user messages inputdata find one and update");
+
+    res.status(200).json({
+      membersMsg: messages,
+      messages: "member messages send ",
+    });
   } catch (error) {
     console.log(error);
+  }
+};
+
+const getUserMessages = async (req, res) => {
+  const { onwerId } = req.params;
+  try {
+    const findMember = await MemberGroups.find({
+      "addMembers.userId": onwerId,
+    });
+
+    if (findMember.length === 0) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    const messagesData = await MemberGroups.find();
+
+    const messagesArray = messagesData.map((item) => item.messages);
+
+    res
+      .status(200)
+      .json({ messages: messagesArray, message: "Member messages retrieved" });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching messages" });
   }
 };
 
@@ -146,5 +230,9 @@ module.exports = {
   getMessages,
   createGroups,
   addMemberGroup,
+  allGroups,
   sendMessage,
+  getUserMessages,
+  allGroupMembers,
+  getMemberMessages,
 };

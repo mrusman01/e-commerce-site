@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
@@ -9,17 +9,27 @@ import {
   DialogTitle,
   Typography,
 } from "@mui/material";
-import { CutomTextField } from "../../components/CustomComponents";
+import {
+  CutomTextField,
+  StyledDialog,
+} from "../../components/CustomComponents";
+import { Link } from "react-router-dom";
 
 const CreateGroupSideBar = () => {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState("");
-  const [memberList, setMemberList] = useState([]);
-  const [addMember, setAddMember] = useState("");
+  const [groupName, setGroupName] = useState("");
+  const [getGroups, setGetGroups] = useState([]);
   const onwerId = localStorage.getItem("onwerId");
 
-  const handleSubmit = async () => {
-    const data = { memberEmail: user, onwerId: onwerId };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = {
+      user,
+      groupName,
+    };
+    const data = { memberEmail: formData, onwerId: onwerId };
     try {
       const response = await axios.post(
         "http://localhost:4000/createMemberGroups",
@@ -31,25 +41,23 @@ const CreateGroupSideBar = () => {
         }
       );
 
-      console.log(response, "-----");
+      console.log(response, "----- create group ----------------");
     } catch (error) {
       console.log(error);
     }
   };
 
-  const addMemberGroupsRequest = async () => {
-    const data = { memberEmail: addMember, onwerId: onwerId };
+  const getAllGroups = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/addMemberGroup",
-        data,
-        {
-          headers: {
-            token: localStorage.getItem("token"),
-          },
-        }
-      );
-      console.log(response, "add Memberin  Groups");
+      const response = await axios.get("http://localhost:4000/allGroups", {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
+
+      // console.log(response);
+      const { allGroups } = response.data;
+      setGetGroups(allGroups);
     } catch (error) {
       console.log(error);
     }
@@ -62,19 +70,20 @@ const CreateGroupSideBar = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  useEffect(() => {
+    getAllGroups();
+  }, []);
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button
+        variant="contained"
+        sx={{ mt: 3, width: "100%" }}
+        onClick={handleClickOpen}
+      >
         create Group
       </Button>
 
-      <CutomTextField
-        label="Email"
-        onChange={(e) => setAddMember(e.target.value)}
-      />
-
-      <Button onClick={addMemberGroupsRequest}>Add Member</Button>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -83,12 +92,17 @@ const CreateGroupSideBar = () => {
         fullWidth
       >
         <DialogContent>
-          <DialogTitle>Add User</DialogTitle>
+          <DialogTitle>Add user?</DialogTitle>
 
           <CutomTextField
             label="Email"
             value={user}
             onChange={(e) => setUser(e.target.value)}
+          />
+          <CutomTextField
+            label="name"
+            value={groupName}
+            onChange={(e) => setGroupName(e.target.value)}
           />
 
           <DialogActions>
@@ -97,14 +111,28 @@ const CreateGroupSideBar = () => {
         </DialogContent>
       </Dialog>
 
+      <Typography variant="h6" textAlign="center">
+        All Groups
+      </Typography>
+
       <Box>
-        {memberList.map((item, i) => {
-          console.log(item);
+        {getGroups.map((item, i) => {
+          // console.log(item._id);
           return (
             <Box key={i} sx={{ my: 1 }}>
-              <Typography sx={{ fontWeight: "bold", color: "#1F1F1F" }}>
-                {item.name}
-              </Typography>
+              <Link to={`/showUser-groups/${item._id}`}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#1F1F1F",
+                    width: "100%",
+                    my: 1,
+                  }}
+                >
+                  {item.groupName}
+                </Button>
+              </Link>
             </Box>
           );
         })}

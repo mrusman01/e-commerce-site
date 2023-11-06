@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import axios from "axios";
@@ -6,12 +6,16 @@ import axios from "axios";
 const MembersChat = () => {
   // const { autherId, userName } = useContext(AuthContext);
   const onwerId = localStorage.getItem("onwerId");
+  const name = localStorage.getItem("name");
   const [newMessage, setNewMessage] = useState("");
+  const [memberMsg, setMemberMsg] = useState([]);
 
   const sendMessage = async () => {
+    console.log(onwerId);
     const data = {
       text: newMessage,
       onwerId: onwerId,
+      name: name,
     };
 
     try {
@@ -29,6 +33,26 @@ const MembersChat = () => {
       console.log(error);
     }
   };
+
+  const handleGetMsg = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/getUserMessages/${onwerId}`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
+      console.log(response, "-----response------");
+      const { messages } = response.data;
+
+      setMemberMsg(...messages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <Grid
@@ -41,23 +65,45 @@ const MembersChat = () => {
         }}
       >
         <Grid item xs={12}>
-          {[1, 2, 3, 4, 5].map((item, i) => (
-            <Box key={i} sx={{ my: 1 }}>
-              <Typography sx={{ textAlign: "left", fontWeight: "bold" }}>
-                item.text
-              </Typography>
-              <Typography
-                sx={{
-                  textAlign: "left",
-                  fontWeight: "bold",
-                  color: "#1976D2",
-                  fontSize: "7px",
-                }}
-              >
-                author
-              </Typography>
-            </Box>
-          ))}
+          {memberMsg.map((item, i) => {
+            return (
+              // <div key={i}>
+              //   <Typography>{item.text}</Typography>
+              //   <Typography>{item.memberId}</Typography>
+              // </div>
+              <Box key={i} sx={{ my: 1 }}>
+                {item.memberId === onwerId ? (
+                  <Typography
+                    sx={{
+                      textAlign: "right",
+                      fontWeight: "bold",
+                      color: "#1976D2",
+                    }}
+                  >
+                    {item.text}
+                    {/* {item.name} */}
+                  </Typography>
+                ) : (
+                  <>
+                    <Typography sx={{ textAlign: "left", fontWeight: "bold" }}>
+                      {item.text}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        textAlign: "left",
+                        fontWeight: "bold",
+                        color: "#1976D2",
+                        fontSize: "7px",
+                      }}
+                    >
+                      {item.autherName}
+                      {item.name}
+                    </Typography>
+                  </>
+                )}
+              </Box>
+            );
+          })}
         </Grid>
       </Grid>
 
@@ -81,6 +127,7 @@ const MembersChat = () => {
         >
           Send
         </Button>
+        <Button onClick={handleGetMsg}>get msg</Button>
       </Box>
     </div>
   );

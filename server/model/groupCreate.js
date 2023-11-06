@@ -11,6 +11,7 @@ const GroupCreate = new mongoose.Schema(
       {
         memberId: String,
         text: String,
+        name: String,
       },
     ],
     addMembers: [

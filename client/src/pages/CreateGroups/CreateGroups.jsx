@@ -1,7 +1,6 @@
 import { Grid } from "@mui/material";
 import CreateGroupSideBar from "./CreateGroupSideBar";
 import MembersChat from "./MembersChat";
-
 const CreateGroups = () => {
   return (
     <div>
